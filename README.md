@@ -1,24 +1,18 @@
 # Ansible Inventory Plugin for Meraki
 
-[![published](https://static.production.devnetcloud.com/codeexchange/assets/images/devnet-published.svg)](https://developer.cisco.com/codeexchange/github/repo/pamosima/RADkit-tools)
-
-The "Cisco RADKit Device Provisioning and VLAN Configuration Tool" automates device provisioning tasks and VLAN configuration for Cisco Catalyst switches using Cisco RADKit, streamlining network management processes.
+The Meraki Inventory Plugin for Ansible simplifies the automation of device provisioning and VLAN configuration tasks for Cisco Catalyst switches. By seamlessly integrating with the Meraki Dashboard, this plugin streamlines network management processes, enhancing overall efficiency.
 
 ## Use Case Description
 
-This tool simplifies the process of automating device provisioning and VLAN configuration for Cisco Catalyst switches, enhancing network management efficiency. By leveraging Ansible playbooks, it offers a seamless solution to modify VLAN configurations for Catalyst Switches monitored in the Meraki Dashboard. With the integrated RADKit service, it's possible to execute the Ansible Playbooks without the need to be on the same network as the devices.
+This plugin offers a comprehensive solution for automating device provisioning and VLAN configuration for Cisco Catalyst switches, thereby optimizing network management operations. Leveraging Ansible playbooks, it provides a seamless approach to modify VLAN configurations for Catalyst Switches monitored within the Meraki Dashboard.
 
-![Modify VLAN's with Cloud Monitoring for Catalyst](img/MerakiRADKitDemo.gif)
+![Get Dynamic Inventory from Meraki Dashboard for Ansible](img/MerakiAnsibletDemo.gif)
 
-The tool consists of three components:
+The project consists of two components:
 
-### [Ansible Inventory Plugin](#python-click-application)
+### [Ansible Playbooks with the Ansible Inventory Plugin](#ansible-playbooks)
 
-This component retrieves devices from the Meraki Dashboard or Cisco Catalyst Center and transfers them to the RADKit service, along with retrieving the current VLAN configuration.
-
-### [Ansible Playbooks](#ansible-playbooks)
-
-These playbooks facilitate the configuration of devices unsing the Ansible Inventory Plugin.
+These playbooks facilitate the configuration of devices unsing the Ansible Inventory Plugin. The Ansible Inventory Plugin retrieves devices from the Meraki Dashboard.
 
 ### [GitLab CI/CD Integration](#gitlab-cicd-pipeline-explanation)
 
@@ -67,8 +61,8 @@ To install and configure the project:
    Adjust the environment variables as needed. Example:
 
    ```bash
-   export MERAKI_API_KEY="my-meraki-apy-key"
-   export MERAKI_ORG_ID="my-meraki-org"
+   export MERAKI_API_KEY="<my-meraki-apy-key>"
+   export MERAKI_ORG_ID="<my-meraki-org>"
    export ANSIBLE_HOST_KEY_CHECKING=false
    ```
 
@@ -78,13 +72,27 @@ To install and configure the project:
    source .bash-script.sh
    ```
 
-8. Install RADKit Service based on the following guide: [RADKit Installation Guide](https://radkit.cisco.com/docs/pages/start_installer.html)
+8. Create an ansible file for SSH Credentials
 
-9. Installation of the Ansible collection is done with ansible-galaxy using the provided .tar.gz file where X.Y.Z is the Ansible collection version (e.g., 0.5.0):
+   In this, I have used ansible vault to create the credentials file for the SSH password & enable secret so that we can manage it safely.
+
+   > **NOTE**: To create a new encrypted file using ansible vault you need to run the below command. It will ask for password so, please give a password that you can easily remember
 
    ```bash
-   ansible-galaxy collection install ansible-cisco-radkit-X.Y.Z.tar.gz --force
+   cd ansible
+   ansible-vault create vars/cred.yml
    ```
+
+   Add below content in it
+
+   ```bash
+   ansible_user: <my-username>
+   ansible_ssh_pass: <my-password>
+   absible_become_pass: <my-enable_secret>
+   ```
+
+9. Create a password file
+   Create a new file called `.vault_password.txt` and add your ansible vault password in it so that we can use it later.
 
 10. (Optional) Build the Docker image for the GitLab CI/CD runner:
 
@@ -106,86 +114,49 @@ Once the image is built successfully, you can use it as the base image for your 
 
 ## Usage
 
-### Python Click application
-
-The Python Click application is located in the python subfolder:
-
-To use the Python Click application:
-
-```
-
-cd python
-python radkit-device-tool.py
-
-```
-
-### Options
-
-#### `a`: Get devices from Meraki Dashboard and write to JSON file
-
-This option retrieves devices from the Meraki Dashboard and saves the information in a JSON file. This file can be used to upload the devices to the RADKit service. You will be prompted to enter the Meraki API key and select your Meraki organization and network.
-
-#### `b`: Get devices from Catalyst Center and write to JSON file
-
-This option fetches devices from the Catalyst Center and stores the data in a JSON file. This file can be used to upload the devices to the RADKit service. You will be prompted to enter your Catalyst Center credentials.
-
-#### `c`: Upload devices to RADKit service from JSON file
-
-Use this option to upload devices to the RADKit service from a JSON file. The JSON file can be created from the Meraki Dashboard or Catalyst Center. You will be prompted to enter your RADKit superadmin password.
-
-#### `d`: Upload devices to RADKit service from CSV file
-
-With this option, you can upload devices to the RADKit service from a CSV file (e.g., `devices_example.csv`). You will be prompted to enter your RADKit superadmin password.
-
-#### `e`: Get VLAN list per device from Meraki Dashboard and write to YAML file(s)
-
-This option retrieves the VLAN list per device from the Meraki Dashboard and saves it in a YAML file per device. These YAML file(s) can be used as device variables to change L2 interface configurations with the Ansible Playbook `l2_interface_config-playbook.yml`.
-
 ### Ansible Playbooks
 
 The Ansible Playbooks are located in the ansible subfolder.
 
-#### RADKit Inventory Plugin
+#### Meraki Inventory Plugin
 
-The cisco.radkit.radkit inventory plugin allows you to create a dynamic inventory from a remote RADKit service.
-
-```
-
-ansible-inventory -i radkit_devices.yml --list --yaml
+The meraki_devices inventory plugin allows you to create a dynamic inventory from the Meraki Dashboard.
 
 ```
 
-#### RADKit Connection Plugin
+cd ansible
+ansible-inventory -i meraki_devices.yml --playbook-dir=. --list --yaml --vault-password-file=.vault_password.txt
 
-The connection Plugin allow you to utilize existing Ansible modules, but connect through RADKIT instead of directly via SSH. With connection the plugin, credentials to devices are stored on the remote RADKit service.
+```
 
 #### Show Version Playbook
 
-This Playbook is using the RADKit Plugins and does a "show version".
+This Playbook is using the meraki_device Plugin and does a "show version".
 
 ```
 
-ansible-playbook -i radkit_devices.yml show_version-playbook.yml --limit radkit_device_type_IOS_XE
+ansible-playbook -i meraki_devices.yml show_version-playbook.yml --vault-password-file=.vault_password.txt
 
 ```
 
 #### L2 Interface Configuration Playbook
 
-This Playbook is using the RADKit Plugins and configures the L2 interfaces of a Catalyst Switch based on the device variable YAML file which can be created by the python click application.
+This Playbook is using the meraki_device Plugin and configures the L2 interfaces of a Catalyst Switch based on the device variable YAML file.
 
 ```
 
-ansible-playbook -i radkit_devices.yml l2_interface_config-playbook.yml
+ansible-playbook -i meraki_devices.yml l2_interface_config-playbook.yml --vault-password-file=.vault_password.txt
 
 ```
 
 #### VLAN Configuration Playbook
 
-This Playbook is using the RADKit Plugins and configures VLAN(s) on Catalyst Switches based on vars/vlans.yaml.
+This Playbook is using the meraki_device Plugin and configures VLAN(s) on Catalyst Switches based on vars/vlans.yaml.
 
 ```
 
 ansible-playbook -i radkit_devices.yml vlan_config-playbook.yml
+ansible-playbook -i meraki_devices.yml vlan_config-playbook.yml --vault-password-file=.vault_password.txt
 
 ```
 
@@ -208,7 +179,7 @@ The GitLab CI/CD configuration defines two stages:
 
 #### Runner Configuration
 
-The GitLab CI/CD runner for this pipeline is a Docker runner which includes Ansible, sshpass, and the necessary Cisco RADkit components for executing the Ansible playbooks.
+The GitLab CI/CD runner for this pipeline is a Docker runner which includes meraki, pyats, ansible and paramiko for executing the Ansible playbooks.
 
 ## Known issues
 
