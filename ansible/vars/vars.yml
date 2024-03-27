@@ -1,4 +1,1 @@
 ansible_network_os: ios
-ansible_user: my-username
-ansible_ssh_pass: my-password
-absible_become_pass: my-enable_secret
