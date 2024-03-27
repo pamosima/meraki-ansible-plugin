@@ -1,5 +1,7 @@
 # Ansible Inventory Plugin for Meraki
 
+[![published](https://static.production.devnetcloud.com/codeexchange/assets/images/devnet-published.svg)](https://developer.cisco.com/codeexchange/github/repo/pamosima/meraki-ansible-plugin)
+
 The Meraki Inventory Plugin for Ansible simplifies the automation of device provisioning and VLAN configuration tasks for Cisco Catalyst switches. By seamlessly integrating with the Meraki Dashboard, this plugin streamlines network management processes, enhancing overall efficiency.
 
 ## Use Case Description
