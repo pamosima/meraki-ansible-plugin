@@ -6,7 +6,7 @@ The Meraki Inventory Plugin for Ansible simplifies the automation of device prov
 
 This plugin offers a comprehensive solution for automating device provisioning and VLAN configuration for Cisco Catalyst switches, thereby optimizing network management operations. Leveraging Ansible playbooks, it provides a seamless approach to modify VLAN configurations for Catalyst Switches monitored within the Meraki Dashboard.
 
-![Get Dynamic Inventory from Meraki Dashboard for Ansible](img/MerakiAnsibletDemo.gif)
+![Get Dynamic Inventory from Meraki Dashboard for Ansible](img/MerakiAnsibleDemo.gif)
 
 The project consists of two components:
 
@@ -155,7 +155,6 @@ This Playbook is using the meraki_device Plugin and configures VLAN(s) on Cataly
 
 ```
 
-ansible-playbook -i radkit_devices.yml vlan_config-playbook.yml
 ansible-playbook -i meraki_devices.yml vlan_config-playbook.yml --vault-password-file=.vault_password.txt
 
 ```
