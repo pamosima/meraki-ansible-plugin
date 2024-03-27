@@ -1,4 +1,4 @@
-# Cisco RADKit Device Provisioning and VLAN Configuration Tool
+# Ansible Inventory Plugin for Meraki
 
 [![published](https://static.production.devnetcloud.com/codeexchange/assets/images/devnet-published.svg)](https://developer.cisco.com/codeexchange/github/repo/pamosima/RADkit-tools)
 
@@ -12,13 +12,13 @@ This tool simplifies the process of automating device provisioning and VLAN conf
 
 The tool consists of three components:
 
-### [Python Click Application](#python-click-application)
+### [Ansible Inventory Plugin](#python-click-application)
 
 This component retrieves devices from the Meraki Dashboard or Cisco Catalyst Center and transfers them to the RADKit service, along with retrieving the current VLAN configuration.
 
 ### [Ansible Playbooks](#ansible-playbooks)
 
-These playbooks facilitate the configuration of devices through the RADKit service.
+These playbooks facilitate the configuration of devices unsing the Ansible Inventory Plugin.
 
 ### [GitLab CI/CD Integration](#gitlab-cicd-pipeline-explanation)
 
@@ -31,13 +31,13 @@ To install and configure the project:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/pamosima/RADKit-tools radkit-tool
+   git clone https://github.com/pamosima/meraki-ansible-plugin meraki-ansible-plugin
    ```
 
 2. Navigate to the repository directory:
 
    ```bash
-   cd radkit-tool
+   cd meraki-ansible-plugin
    ```
 
 3. Create a virtual environment:
@@ -58,32 +58,24 @@ To install and configure the project:
    pip install -r requirements.txt
    ```
 
-6. Configure environment variables by editing the `bash-script.sh` file:
+6. Configure environment variables by creating the `.bash-script.sh` file:
 
    ```bash
-   nano /bash-script.sh
+   nano .bash-script.sh
    ```
 
    Adjust the environment variables as needed. Example:
 
    ```bash
-   export RADKIT_ANSIBLE_CLIENT_PRIVATE_KEY_PASSWORD_BASE64=$(echo -n 'my-password' | base64)
-   export RADKIT_ANSIBLE_IDENTITY="my-username"
-   export RADKIT_ANSIBLE_SERVICE_SERIAL="my-service-id"
-   ```
-
-   Optionally, you can set the environment variable `MERAKI_API_KEY` to provide your Meraki Dashboard API key.
-
-   ```bash
    export MERAKI_API_KEY="my-meraki-apy-key"
+   export MERAKI_ORG_ID="my-meraki-org"
+   export ANSIBLE_HOST_KEY_CHECKING=false
    ```
 
-   > **NOTE**: If `MERAKI_API_KEY` is not set or is empty, you will be prompted to enter the API key when initializing the Meraki Dashboard API.
-
-7. Source the `bash-script.sh` file to apply the environment variables:
+7. Source the `.bash-script.sh` file to apply the environment variables:
 
    ```bash
-   source /bash-script.sh
+   source .bash-script.sh
    ```
 
 8. Install RADKit Service based on the following guide: [RADKit Installation Guide](https://radkit.cisco.com/docs/pages/start_installer.html)
@@ -102,17 +94,12 @@ To install and configure the project:
       cd gitlab-cicd/docker
       ```
 
-    - Download the necessary files from [RADKit Downloads](https://radkit.cisco.com/downloads/):
-
-      - **Cisco RADkit Collection File**: Download the `ansible-cisco-radkit-X.Y.Z.tar.gz` file.
-      - **Cisco RADkit Python Package Archive**: Download the `cisco_radkit_X.Y.Z_pip_linux_x86.tgz` file.
-
     - Copy the downloaded files into the `docker` directory.
 
     - Build the Docker image using the following command:
 
       ```bash
-      docker build -t radkit-runner .
+      docker build -t ansible-runner .
       ```
 
 Once the image is built successfully, you can use it as the base image for your GitLab CI/CD runner.
