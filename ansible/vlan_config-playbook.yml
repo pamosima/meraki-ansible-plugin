@@ -17,6 +17,7 @@
   connection: network_cli
   vars_files:
     - vars/vars.yml
+    - vars/cred.yml
   gather_facts: no
   vars:
     ansible_verbosity: 2 # Set the default verbosity level here

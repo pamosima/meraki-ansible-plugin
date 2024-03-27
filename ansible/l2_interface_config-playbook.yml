@@ -17,6 +17,7 @@
   connection: network_cli
   vars_files:
     - vars/vars.yml
+    - vars/cred.yml
   gather_facts: no
   tasks:
     - name: Check if host-specific variables file exists
