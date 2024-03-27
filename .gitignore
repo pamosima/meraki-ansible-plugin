@@ -259,3 +259,4 @@ fabric.properties
 .vscode/
 *.pem
 .vault_password.txt
+.bash-script.sh
