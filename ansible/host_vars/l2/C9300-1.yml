@@ -1,0 +1,29 @@
+interfaces:
+  - name: GigabitEthernet1/0/1
+    description: c9200-1:Gig1/0/1
+    enabled: true
+    mode: trunk
+    trunk:
+      allowed_vlans: 255,1021
+      native_vlan: 255
+  - name: GigabitEthernet1/0/2
+    description: c9200-2:Gig1/0/1
+    enabled: true
+    mode: trunk
+    trunk:
+      allowed_vlans: 255,1021
+      native_vlan: 255
+  - name: GigabitEthernet1/0/3
+    description: MS390-1:Port1
+    enabled: true
+    mode: trunk
+    trunk:
+      allowed_vlans: 255,1021
+      native_vlan: 255
+  - name: TenGigabitEthernet1/1/1
+    description: Uplink
+    enabled: true
+    mode: trunk
+    trunk:
+      allowed_vlans: 2200,3213
+      native_vlan: 1

@@ -1,0 +1,12 @@
+plugin: meraki_devices
+strict: False
+keyed_groups:
+  # group devices based on device type (e.g., meraki_device_type_MX64)
+  - prefix: meraki_device_type
+    key: meraki_device_type
+  # group devices based on network name
+  - prefix: meraki_network
+    key: meraki_network
+  # group devices based on meraki device tag
+  - prefix: meraki_tag
+    key: tags

@@ -1,0 +1,21 @@
+vlans:
+  - name: Vlan_2200
+    mtu: 1500
+    vlan_id: 2200
+    state: active
+    shutdown: disabled
+  - name: Vlan_3213
+    mtu: 1500
+    vlan_id: 3213
+    state: active
+    shutdown: disabled
+  - name: Mgmt
+    mtu: 1500
+    vlan_id: 255
+    state: active
+    shutdown: disabled
+  - name: Clients
+    mtu: 1500
+    vlan_id: 1021
+    state: active
+    shutdown: disabled

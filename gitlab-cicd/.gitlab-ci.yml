@@ -1,0 +1,47 @@
+# Copyright (c) 2024 Cisco and/or its affiliates.
+#
+# This software is licensed to you under the terms of the Cisco Sample
+# Code License, Version 1.1 (the "License"). You may obtain a copy of the
+# License at
+#
+#                https://developer.cisco.com/docs/licenses
+#
+# All use of the material herein must be in accordance with the terms of
+# the License. All rights not expressly granted by the License are
+# reserved. Unless required by applicable law or agreed to separately in
+# writing, software distributed under the License is distributed on an "AS
+# IS" BASIS, WITH
+
+default:
+  image: git.its-best.ch:5050/meraki-tools/ansible-pipeline:latest
+
+stages:
+  - deploy
+
+variables:
+  ANSIBLE_HOST_KEY_CHECKING: "false"
+  ANSIBLE_FORCE_COLOR: "true"
+
+deploy_l2_interface_config:
+  stage: deploy
+  script:
+    - cd ansible
+    - ansible-playbook -i meraki_devices.yml l2_interface_config-playbook.yml --vault-password-file=/ansible/.vault_password.txt
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $PIPELINE_NAME == "l2"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"
+      changes:
+        - ansible/host_vars/l2/*.yml
+        - ansible/vars/l2.yml
+
+deploy_vlan_config:
+  stage: deploy
+  script:
+    - cd ansible
+    - ansible-playbook -i meraki_devices.yml vlan_config-playbook.yml --vault-password-file=/ansible/.vault_password.txt
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $PIPELINE_NAME == "vlan"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"
+      changes:
+        - ansible/vars/vlans.yml
+        - ansible/host_vars/vlans/*.yml
