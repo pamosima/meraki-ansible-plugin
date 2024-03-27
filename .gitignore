@@ -260,3 +260,4 @@ fabric.properties
 *.pem
 .vault_password.txt
 .bash-script.sh
+cred.yml
