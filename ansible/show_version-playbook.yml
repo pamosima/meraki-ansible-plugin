@@ -22,7 +22,7 @@
   tasks:
     - name: Run show version and parse
       ansible.utils.cli_parse:
-        command: "show version"
+        command: show version
         parser:
           name: ansible.netcommon.pyats
         set_fact: versions_fact
